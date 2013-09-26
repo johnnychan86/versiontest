@@ -89,17 +89,13 @@ class Initialize(State):
 
         if self.direct_flag:
             return "RunTest"
-
         if not curr_profile:
             self.create_system()
-
         if not profile in get_distros():
             return "CobblerInit"
-
         if not self.re_import:
             return "StartInstall"
 
-        print curr_profile, profile
         if curr_profile == profile:
             rc = self.remove_all(profile)
             if rc:
@@ -167,7 +163,6 @@ class Initialize(State):
                --power-user=%(power-user)s \
                --power-pass=%(power-passwd)s \
                --power-address=%(power-address)s" % node_info
-        print cmd
         rc = os.system(cmd)
         if rc:
             return rc

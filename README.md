@@ -1,4 +1,4 @@
 versiontest
 ===========
 
-fronware virtuallize platform version auto test
+virtuallize platform version auto test
