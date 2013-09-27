@@ -10,7 +10,6 @@ import const
 
 HOST = const.NODE1['ip']
 
-
 class Test(unittest.TestCase):
 
 
@@ -44,6 +43,11 @@ class Test(unittest.TestCase):
         self.vserver.is_mounted('autoadd_cifs', timeout=300)
         self.vserver.add_storage('autoadd_nfs', 'NFS', self.nfs)
         self.vserver.is_mounted('autoadd_nfs', timeout=300)
+
+        self.vserver.discover_iscsi('10.10.1.40')
+        self.vserver.iscsi_auth('disk5', '10.10.1.40', 'chenximin', '111111')
+        self.vserver.add_storage_iscsi('autoadd_iscsi', 'disk5', '10.10.1.40')
+        self.vserver.is_mounted('autoadd_iscsi', timeout=300)
         
     def copy_img(self):
         self.logging_info('copy_img')
@@ -237,27 +241,27 @@ class Test(unittest.TestCase):
 
     
     def testStability(self):
-        #self.mount_storage()
-        #time.sleep(1)
-        #self.copy_img()
-        #time.sleep(1)
-        #vm = self.create_vm('auto-seed')
-        #self.tools_install(vm)
+        self.mount_storage()
+        time.sleep(1)
+        self.copy_img()
+        time.sleep(1)
+        vm = self.create_vm('auto-seed')
+        self.tools_install(vm)
         
-        #self.up_down(vm, 1)
-       # time.sleep(20)
-        #self.reboot_vm(vm, 1)
+        self.up_down(vm, 1)
+        time.sleep(20)
+        self.reboot_vm(vm, 1)
 
-        #time.sleep(5)
-        #vm = self.vserver.get_exist_vm('auto-seed')
-        #self.pause_vm(vm, 3)
-        #self.clone_vms(vm, 3)
-        #vm1 = self.vserver.get_exist_vm('clone-0')
-        #vm2 = self.vserver.get_exist_vm('clone-1')
-        #vm3 = self.vserver.get_exist_vm('clone-2')
-        #self.take_snapshot(vm1, 6)
-        #time.sleep(2)
-        #self.rec_snapshot(vm1, 5)
+        time.sleep(5)
+        vm = self.vserver.get_exist_vm('auto-seed')
+        self.pause_vm(vm, 3)
+        self.clone_vms(vm, 3)
+        vm1 = self.vserver.get_exist_vm('clone-0')
+        vm2 = self.vserver.get_exist_vm('clone-1')
+        vm3 = self.vserver.get_exist_vm('clone-2')
+        self.take_snapshot(vm1, 6)
+        time.sleep(2)
+        self.rec_snapshot(vm1, 5)
         self.backup(vm2, 3)
 
         temp1 = self.copy_to_template(vm3)

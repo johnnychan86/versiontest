@@ -22,6 +22,7 @@ class TestEngine(object):
         self.current = None
         self.prev = None
         self.s_stack = []
+        self.skip_list = []
         logging_manager.configure_logging(CommonLoggingConfig(), 
                 use_console=True, verbose=False)
         self.logging = logging_manager.get_logging_manager(

@@ -169,7 +169,7 @@ class VMBase(object):
                 self.ip = self.query.get_vm_ip(self.name)
                 # IP address verification
                 self.verify_vm_ip()
-                if ping.ping(self.ip, 2):
+                if ping.ping(self.ip):
                     return time.time() - start
             else:
                 try:
@@ -243,3 +243,6 @@ class VMBase(object):
 
     def update_vhd(self, vhd, index=0):
         self.cfg['hd'][index].update(vhd)
+
+    def get_snapshots(self):
+        return self.query.get_snapshots(self.name)

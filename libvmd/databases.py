@@ -110,6 +110,15 @@ class DBQuery(object):
         elif len(results) == 1:
             return results[0]
     
+    def get_iscsi_service(self, disk, ip):
+        table = "iscsiservice"
+        column = "serviceipport,servicename,wwid"
+        condition = "serviceipport like '%%%s%%' and servicename like '%%%s%%'" \
+                     % (ip, disk)
+        results = self.query(table, condition, column)
+        #results = results = [x[0] for x in results]
+        return results[0]
+    
     def get_hostUuid(self):
         column = 'uuid'
         results = self.query('hosts', '', column)

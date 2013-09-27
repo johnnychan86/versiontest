@@ -63,12 +63,7 @@ def get_version(path):
 def get_distros():
     cmd = "cobbler distro list"
     stdout = Popen(cmd, shell=True, stdout=PIPE).stdout
-    distros = []
-
-    for line in stdout:
-        distros.append(line.strip())
-
-    return distros
+    return [x.strip() for x in stdout]
 
 
 class Initialize(State):
@@ -96,7 +91,6 @@ class Initialize(State):
         if not self.re_import:
             return "StartInstall"
 
-        print curr_profile, profile
         if curr_profile == profile:
             rc = self.remove_all(profile)
             if rc:

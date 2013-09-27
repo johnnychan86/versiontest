@@ -243,3 +243,6 @@ class VMBase(object):
 
     def update_vhd(self, vhd, index=0):
         self.cfg['hd'][index].update(vhd)
+
+    def get_snapshots(self):
+        return self.query.get_snapshots(self.name)

@@ -38,16 +38,52 @@ class VServer(ssh_host.SSHHost):
         opt_id = 200
         params = {}
         params['hostUuid'] = self.uuid
-        if is_mount:
-            params['isMount'] = 'yes'
-        else:
-            params['isMount'] = 'no'
+        params['isMount'] = 'yes' if is_mount else 'no'
         params['storageName'] = name
         params['storageType'] = storage_type
         params['storagePar'] = par
         
         m_id = self.exe.run(opt_id, params, self.hostname, 'storage', 'StorageTask')
         self.exe.wait_for_done(m_id, self.hostname, 120)
+    
+    def add_storage_iscsi(self, name, disk, ip, format=True):
+        disk_info = self.get_iscsi_service(disk, ip)
+        par = {"fileSystem": "yes" if format else "no", 
+               "wwid": disk_info['wwid']}
+        
+        self.add_storage(name, 'iSCSI', par)
+        
+    
+    def discover_iscsi(self, ip, port=3260):
+        opt_id = 220
+        params = {
+                  'ip': ip,
+                  'discovery_password': "",
+                  'discovery_username': "",
+                  'discovery_username_in': "",
+                  'discovery_password_in': "",
+                  'hostUuid': self.uuid,
+                  'port': str(port)
+                  }
+        
+        m_id = self.exe.run(opt_id, params, self.hostname, 'storage', 'StorageTask')
+        self.exe.wait_for_done(m_id, self.hostname, 180)
+    
+    def iscsi_auth(self, disk, ip, user, passwd):
+        opt_id = 221
+        disk_info = self.get_iscsi_service(disk, ip)
+        params = {
+                  'hostUuid': self.uuid,
+                  'target': disk_info['servicename'],
+                  'ipport': disk_info['serviceipport'],
+                  'account': {"password_in": "",
+                              "password": passwd,
+                              "authmethod": "CHAP",
+                              "username": user,
+                              "username_in":""}
+                  }
+        m_id = self.exe.run(opt_id, params, self.hostname, 'storage', 'StorageTask')
+        self.exe.wait_for_done(m_id, self.hostname, 180)
     
     def is_mounted(self, storage_name, timeout=120):
         current = time.time()
@@ -121,7 +157,15 @@ class VServer(ssh_host.SSHHost):
     def get_storage_uuid(self, storage_name):
         return self.db_query.get_storageUuid("description='%s'" %
                                               storage_name)
-
+        
+    def get_iscsi_service(self, disk, ip):
+        result = self.db_query.get_iscsi_service(disk, ip)
+        result = {
+                  'serviceipport': result[0],
+                  'servicename': result[1],
+                  'wwid': result[2]
+                  }
+        return result
 
     def get_backup_info(self, backup_id):
         return self.db_query.get_backup_info(backup_id)

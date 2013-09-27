@@ -63,12 +63,7 @@ def get_version(path):
 def get_distros():
     cmd = "cobbler distro list"
     stdout = Popen(cmd, shell=True, stdout=PIPE).stdout
-    distros = []
-
-    for line in stdout:
-        distros.append(line.strip())
-
-    return distros
+    return [x.strip() for x in stdout]
 
 
 class Initialize(State):

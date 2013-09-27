@@ -8,8 +8,7 @@ from libvmd import cmd, vserver, storage
 from libvmd import databases
 import const
 
-HOST = const.HOST
-
+HOST = const.NODE1['ip']
 
 class Test(unittest.TestCase):
 
@@ -237,27 +236,27 @@ class Test(unittest.TestCase):
 
     
     def testStability(self):
-        #self.mount_storage()
-        #time.sleep(1)
-        #self.copy_img()
-        #time.sleep(1)
-        #vm = self.create_vm('auto-seed')
-        #self.tools_install(vm)
+        self.mount_storage()
+        time.sleep(1)
+        self.copy_img()
+        time.sleep(1)
+        vm = self.create_vm('auto-seed')
+        self.tools_install(vm)
         
-        #self.up_down(vm, 1)
-       # time.sleep(20)
-        #self.reboot_vm(vm, 1)
+        self.up_down(vm, 1)
+        time.sleep(20)
+        self.reboot_vm(vm, 1)
 
-        #time.sleep(5)
-        #vm = self.vserver.get_exist_vm('auto-seed')
-        #self.pause_vm(vm, 3)
-        #self.clone_vms(vm, 3)
-        #vm1 = self.vserver.get_exist_vm('clone-0')
-        #vm2 = self.vserver.get_exist_vm('clone-1')
-        #vm3 = self.vserver.get_exist_vm('clone-2')
-        #self.take_snapshot(vm1, 6)
-        #time.sleep(2)
-        #self.rec_snapshot(vm1, 5)
+        time.sleep(5)
+        vm = self.vserver.get_exist_vm('auto-seed')
+        self.pause_vm(vm, 3)
+        self.clone_vms(vm, 3)
+        vm1 = self.vserver.get_exist_vm('clone-0')
+        vm2 = self.vserver.get_exist_vm('clone-1')
+        vm3 = self.vserver.get_exist_vm('clone-2')
+        self.take_snapshot(vm1, 6)
+        time.sleep(2)
+        self.rec_snapshot(vm1, 5)
         self.backup(vm2, 3)
 
         temp1 = self.copy_to_template(vm3)
