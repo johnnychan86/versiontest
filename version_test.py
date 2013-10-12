@@ -18,12 +18,15 @@ def main():
             dest='reimport', help="Do not re-import the distro")
     parser.add_option('-d', '--direct-test', action='store_true', 
             dest='direct', help="Set direct test")
+    parser.add_option('-o', '--skip-install', action='store_true',
+            dest='skip_install', help="Skip the server insallation")
 
     (options, args) = parser.parse_args()
     path = ''
     system = ''
     reimport = True
     direct = False
+    skip_install = False
 
     if options.path:
         path = options.path
@@ -33,6 +36,8 @@ def main():
         reimport = False
     if options.direct:
         direct = True
+    if options.skip_install:
+        skip_install = True
 
     if not path or not system:
         parser.print_help()

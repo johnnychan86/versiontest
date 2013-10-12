@@ -77,6 +77,7 @@ class Initialize(State):
         self.system = args['sys']
         self.re_import = args['reimport']
         self.direct_flag = args['direct']
+        self.skip_install = args['skip_install']
 
     def next(self):
         curr_profile = get_state(self.system, 'Profile')
@@ -84,6 +85,8 @@ class Initialize(State):
 
         if self.direct_flag:
             return "RunTest"
+        if self.skip_install:
+            return "ServerInit"
         if not curr_profile:
             self.create_system()
         if not profile in get_distros():

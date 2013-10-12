@@ -106,6 +106,13 @@ class Test(unittest.TestCase):
             
         time.sleep(15)
         for x in xrange(count):
+            vm.pw_restart()
+            time.sleep(20)
+            vm.is_started(timeout=250)
+            time.sleep(5)
+            logging.info("power restart: " + str(x))
+
+        for x in xrange(count):
             vm.restart()
             time.sleep(20)
             vm.is_started(timeout=200)
@@ -220,23 +227,25 @@ class Test(unittest.TestCase):
 
         rw_diff = self.handler.diff_clone(temp, basename + 'rw',
                                           typ='rw', number=count)
-        # ro_diff = self.handler.diff_clone(temp, basename + 'ro',
-        #                                   typ='ro', number=count)
+        ro_diff = self.handler.diff_clone(temp, basename + 'ro',
+                                          typ='ro', number=count)
+        def boot_check(vm_list):
+            vms = []
+            for x in vm_list:
+                vm = self.vserver.get_vm_by_uuid(x)
+                vms.append(vm)
+                print vm.name
+                vm.start()
 
-        vms = []
-        for x in rw_diff:
-            vm = self.vserver.get_vm_by_uuid(x)
-            vms.append(vm)
-            print vm.name
-            vm.start()
+            for x in vms:
+                vm.is_started(timeout=200)
 
-        for x in vms:
-            vm.is_started(timeout=200)
-
-        for x in vms:
-            x.poweroff()
-            x.is_down()
-
+            for x in vms:
+                x.poweroff()
+                x.is_down()
+            
+        boot_check(rw_diff)
+        boot_check(ro_diff)
 
 
     
@@ -264,8 +273,8 @@ class Test(unittest.TestCase):
         self.rec_snapshot(vm1, 5)
         self.backup(vm2, 3)
 
-        temp1 = self.copy_to_template(vm3)
-        self.diff_clone(temp1, 1, 'diff_clone1')
+        #temp1 = self.copy_to_template(vm3)
+        #self.diff_clone(temp1, 1, 'diff_clone1')
         self.to_template(vm3)
         self.diff_clone(vm3, 5, 'diff_clone2')
 

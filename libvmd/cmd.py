@@ -103,7 +103,7 @@ class Executer(object):
         while True:
             try:
                 msg = LISTENING_QUEUE.get(True, timeout)
-                logging.debug(msg)
+                #logging.debug(msg)
             except Queue.Empty:
                 raise error.OperationTimeoutException(timeout)
             else:

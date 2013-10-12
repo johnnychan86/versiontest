@@ -43,6 +43,11 @@ class Test(unittest.TestCase):
         self.vserver.is_mounted('autoadd_cifs', timeout=300)
         self.vserver.add_storage('autoadd_nfs', 'NFS', self.nfs)
         self.vserver.is_mounted('autoadd_nfs', timeout=300)
+
+        self.vserver.discover_iscsi('10.10.1.40')
+        self.vserver.iscsi_auth('disk5', '10.10.1.40', 'chenximin', '111111')
+        self.vserver.add_storage_iscsi('autoadd_iscsi', 'disk5', '10.10.1.40')
+        self.vserver.is_mounted('autoadd_iscsi', timeout=300)
         
     def copy_img(self):
         self.logging_info('copy_img')
@@ -100,6 +105,13 @@ class Test(unittest.TestCase):
             vm.is_started(timeout=200)
             
         time.sleep(15)
+        for x in xrange(count):
+            vm.pw_restart()
+            time.sleep(20)
+            vm.is_started(timeout=250)
+            time.sleep(5)
+            logging.info("power restart: " + str(x))
+
         for x in xrange(count):
             vm.restart()
             time.sleep(20)
@@ -259,8 +271,8 @@ class Test(unittest.TestCase):
         self.rec_snapshot(vm1, 5)
         self.backup(vm2, 3)
 
-        temp1 = self.copy_to_template(vm3)
-        self.diff_clone(temp1, 1, 'diff_clone1')
+        #temp1 = self.copy_to_template(vm3)
+        #self.diff_clone(temp1, 1, 'diff_clone1')
         self.to_template(vm3)
         self.diff_clone(vm3, 5, 'diff_clone2')
 

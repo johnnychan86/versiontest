@@ -23,4 +23,4 @@ NODE1 = {
         'power-address': '10.10.48.74'
         }
 
-TEST_CASES = 'fake'
+TEST_CASES = 'stability'

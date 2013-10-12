@@ -34,7 +34,7 @@ class VServer(ssh_host.SSHHost):
             
         
         
-    def add_storage(self, name, storage_type, par, is_mount=True):
+    def add_storage(self, name, storage_type, par, is_mount=True, timeout=300):
         opt_id = 200
         params = {}
         params['hostUuid'] = self.uuid
@@ -44,17 +44,17 @@ class VServer(ssh_host.SSHHost):
         params['storagePar'] = par
         
         m_id = self.exe.run(opt_id, params, self.hostname, 'storage', 'StorageTask')
-        self.exe.wait_for_done(m_id, self.hostname, 120)
+        self.exe.wait_for_done(m_id, self.hostname, timeout)
     
-    def add_storage_iscsi(self, name, disk, ip, format=True):
+    def add_storage_iscsi(self, name, disk, ip, format=True, timeout=300):
         disk_info = self.get_iscsi_service(disk, ip)
         par = {"fileSystem": "yes" if format else "no", 
                "wwid": disk_info['wwid']}
         
-        self.add_storage(name, 'iSCSI', par)
+        self.add_storage(name, 'iSCSI', par, timeout)
         
     
-    def discover_iscsi(self, ip, port=3260):
+    def discover_iscsi(self, ip, port=3260, timeout=180):
         opt_id = 220
         params = {
                   'ip': ip,
@@ -67,9 +67,9 @@ class VServer(ssh_host.SSHHost):
                   }
         
         m_id = self.exe.run(opt_id, params, self.hostname, 'storage', 'StorageTask')
-        self.exe.wait_for_done(m_id, self.hostname, 180)
+        self.exe.wait_for_done(m_id, self.hostname, timeout)
     
-    def iscsi_auth(self, disk, ip, user, passwd):
+    def iscsi_auth(self, disk, ip, user, passwd, timeout=180):
         opt_id = 221
         disk_info = self.get_iscsi_service(disk, ip)
         params = {
@@ -83,7 +83,7 @@ class VServer(ssh_host.SSHHost):
                               "username_in":""}
                   }
         m_id = self.exe.run(opt_id, params, self.hostname, 'storage', 'StorageTask')
-        self.exe.wait_for_done(m_id, self.hostname, 180)
+        self.exe.wait_for_done(m_id, self.hostname, timeout)
     
     def is_mounted(self, storage_name, timeout=120):
         current = time.time()

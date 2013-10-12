@@ -5,11 +5,12 @@ import logging
 import time
 import datetime
 
+import const
 from utils import logging_config
 from utils import logging_manager
 
 
-HOME_PATH = "/var/version_test/"
+HOME_PATH = const.HOME_PATH
 
 class CommonLoggingConfig(logging_config.LoggingConfig):
     pass

@@ -13,7 +13,7 @@ import databases
 import vmi as vm
 from utils import zmq_client
 from utils import base_utils
-from errors import error
+import error
 
 STEP_INTERVAL = 5
 BASE_MSG = {'id': '',
