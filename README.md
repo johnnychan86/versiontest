@@ -1,4 +1,4 @@
 versiontest
 ===========
 
-virtuallize platform version auto test
+virtualization platform version auto test
